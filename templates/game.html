@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+        <style>
+        body{
+        font-family: "Times New Roman";
+        }
+        
+        h1, h2, h3, h4, h5, h6{
+        font-family: "Times New Roman";
+        }
+        
+            .dot {
+                height: 25px;
+                width: 25px;
+                background-color: var(--c);
+                border-radius: 50%;
+                display: inline-block;
+            }
+
+            th, td {
+                padding: 8px;
+                border-bottom: 4px solid #ddd;
+            }
+
+            div {
+                margin-bottom: 10px;
+                max-width: 900px;
+                width: 92%;
+                margin: 0 auto;
+            }
+            
+            div.full-width{
+            max-width: unset;
+            width: 100%;
+            
+            }
+            
+            .header{
+            background-color: black;
+            color: #757575!important;
+            padding: 20px 0;
+            }
+            
+            .game-section{
+            border: 2px solid black;
+            padding: 15px 0;
+            }
+            
+            .btn-black{
+            background-color: black;
+            color: silver !important;
+
+            font-size: 18px;
+    
+            }
+            
+            .inter-word{
+            text-justify: inter-word;
+            }
+            
+            .img-wrapper{
+            text-align: center;
+            }
+            
+            .img-fluid{
+            margin: 0 auto;
+            }
+            
+            #myTable{
+            margin-top: 15px !important;
+            }
+
+
+        </style>
+    
+    </head>
+
+
+    <body>
+        <div style="text-align:center" class="header full-width">
+            <h1 class="w3-jumbo w3-text-gray">Mastermind</h1>
+            <h1 class="w3-xxlarge w3-text-gray">The Game</h1>
+            <h1 class="w3-large w3-text-gray">   Deepshi Garg | Skr Thiyyagura </h1>           
+        </div>
+        
+        <div class="w3-row">
+            <div style="text-align:center">
+                <h1 class="w3-xxlarge">Introduction</h1>
+            </div>
+            <div class="w3-xmedium w3-text-black">
+              <p class="">
+              <p>The game Mastermind has two players :</p>
+              <ul>
+              <li>Player 1 : Code-maker</li>
+              <li>Player 2 : Code-breaker</li>
+              </ul>
+              <p>The game starts with code-maker deciding on a secret code, which needs to be guessed by code-breaker within certain number of guesses. There are 6 colors available. The secret code and every guess needs to abide by following rules :</p>
+              <ul>
+              <li>Length of code/guess should be 4.</li>
+              <li>There should be 4 different colors. Repetition of colors within a code/guess is not allowed.</li>
+              </ul>
+              <p class="inter-word">Once code-maker decides over a secret code, code-breaker attempts to guess it. Each move consists of a guess by code-breaker. Code-maker analyses this move, and generates a feedback based on its equivalency to the secret code. This feedback is in accordance with the following rules :</p>
+              <ul>
+              <li>It has 4 elements.</li>
+              <li>If element value = 1  : It means the color and position both are correctly guessed for the element at this position.</li>
+              <li>If element value = 0  : It means an element of this color is present somewhere in the code, but not at this position.</li>
+              <li>If element value = -1 : It means there is no element of this color in the code.</li>
+              </ul>
+              <p>Code-breaker uses this feedback on its previous move to generate the next move. If it is able to make a correct guess within 3 moves, it wins, otherwise the code-maker wins.</p>
+  
+            </div>
+        </div>
+            
+
+
+            
+
+            <div style="text-align:center" class="game-section">
+                <button class="w3-btn btn-black" onclick="window.location.reload();">New Game</button>
+            <!-- <button class="w3-btn" style="background-color:rgb(154, 166, 231)" onclick="myFunction()">Try it</button> -->
+            <button class="w3-btn btn-black " onclick="myFunction2()">Show Logs</button>
+            <button class="w3-btn btn-black " onclick="myFunction3()">Stratergies</button>
+                <div id="myTable">
+                
+                    <span class="dot" style="--c: {{ color[code[0]] }}"></span>
+                        <span class="dot" style="--c: {{ color[code[1]] }}"></span>
+                        <span class="dot" style="--c: {{ color[code[2]] }}"></span>
+                        <span class="dot" style="--c: {{ color[code[3]] }}"></span>
+
+                        <table style="width:100%">
+                            <tr>
+                                <th colspan = "5">Generated Sequence</th>
+                            </tr>
+                            {% for move in moves %}
+                                <tr>
+                                    <td rowspan = "2">Chance {{ loop.index }}</td>
+                                    <td>  <span class="dot" style="--c: {{ color[move[0]] }}"></span></td>
+                                    <td>  <span class="dot" style="--c: {{ color[move[1]] }}"></span></td>
+                                    <td>  <span class="dot" style="--c: {{ color[move[2]] }}"></span></td>
+                                    <td>  <span class="dot" style="--c: {{ color[move[3]] }}"></span></td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>{{ feedbacks[loop.index-1][0] }}</td>
+                                    <td>{{ feedbacks[loop.index-1][1] }}</td>
+                                    <td>{{ feedbacks[loop.index-1][2] }}</td>
+                                    <td>{{ feedbacks[loop.index-1][3] }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        
+                        <h1>Winner - {{ winner }}</h1>
+                    </div>
+                </div>
+            <div style="display:None" id='log'> 
+                {% for line in log %}               
+                    <p id='log'>{{ line }}</p>
+                {% endfor %}
+            </div>
+
+            <div id="stratTable" style="text-align:center" class="game-section">
+              <table style="width:100%">
+                <tr>
+                    <th colspan = "5"><h1>Generated Stratergies</h1></th>
+                </tr>
+                {% for code in codes %}
+                    <tr>
+                        <td >Chance {{ loop.index }}</td>
+                        <td>  <span class="dot" style="--c: {{ color[code[0]] }}"></span></td>
+                        <td>  <span class="dot" style="--c: {{ color[code[1]] }}"></span></td>
+                        <td>  <span class="dot" style="--c: {{ color[code[2]] }}"></span></td>
+                        <td>  <span class="dot" style="--c: {{ color[code[3]] }}"></span></td>
+                    </tr>
+                {% endfor %}
+              </table>
+              <h6>Number of Games - {{ games }}</h6>
+              <h6>Mathematician Codebreaker Score - {{ sc1 }}</h6>
+              <h6>Logician Codebreaker Score - {{ sc2 }}</h6>
+              <h6>Random Codebreaker Score - {{ sc3 }}</h6>
+            </div>
+
+
+
+
+
+            
+            
+            
+            <div class="w3-row">
+                <div style="text-align:center">
+                    <h1 class="w3-xxlarge">Epistemic Logic Application</h1>
+   
+                </div>
+                <div class="w3-xmedium w3-text-black">
+                  <p class="">            <p>We can use Kripke Models, bound within S5 Axiom System, to analyse the logical aspects of the two agents (players) present in the game here.</p>
+                  <p>We have the following 6 colors available: </p>
+                  <div class="img-wrapper"><img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/all_colors.jpg" width="200" class="img-fluid"></div>
+                  <p>Code-maker needs to chose a secret code of length 4, with no duplicates. Suppose the secret code chosen by the code-maker be :</p>
+                  <div class="img-wrapper"><img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/code.jpg" width="140" class="img-fluid"></div>
+                  <p>Talking in terms of Kripke Model, we can say that :</p>
+                  <ul>
+                  <li>Real world is the same as the secret code.</li>
+                  <li>Code-maker considers only the real world to be possible, because it knows the actual code.</li>
+                  <li>Code-breaker considers all the possible worlds in the beginning of the game. Therefore, with no repetitions, there are 360 worlds possible for the code-breaker.</li>
+                  </ul>
+                  <p>Using the knowledge operator <b>K</b>, we can assert the following :</p>
+                  <ul>
+                  <li>Code-maker can access only the real world.</li>
+                  <li>Code breaker can access all the worlds from all the other worlds.</li>
+                  <li>Considering reflexive relations:<ul>
+                  <li>Code-maker possesses reflexive relations on all the worlds. This is because, whatever is the world, code-maker knows about it.</li>
+                  <li>Code-breaker also possesses reflexive relations on all the worlds. This is because, regardless of what the real world is, code-breaker considers every world possible.</li>
+                  </ul>
+                  </li>
+                  </ul>
+                  <p>For example, if we consider a few relations and a few worlds, following Kripke Model is acheived :</p>
+                  <div class="img-wrapper"><img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/example_model.jpg" width="350"class="img-fluid"></div>
+                  <p>Here :</p>
+                  <ul>
+                  <li>Agent 1 is the code-maker and agent 2 is the code-breaker.</li>
+                  <li>World within a square boundary is the real world.</li>
+                  <li>There exists a reflexive relation for both the agents at every world.</li>
+                  <li>There are other relations and other worlds possible as well, but we have skipped them to maintain the simplicity of the diagram.</li>
+                  <li>R2 are the knowledge relations for agent 2.</li>
+                  </ul>
+                  <p>Here, colors are the propositional variables. In each world, the possible code decides which propositions are true. For example, for the real world :</p>
+                  <div class="img-wrapper"><img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/code.jpg" width="140" class="img-fluid"></div>
+                  <p>Following is the <code>pi</code> value of this world :</p>
+                  <ul>
+                  <li>green = true</li>
+                  <li>yellow = true</li>
+                  <li>red = true</li>
+                  <li>blue = true</li>
+                  <li>pink = false</li>
+                  <li>violet = false</li>
+                  </ul>
+                  <p>Given the above relations and model, we can summarise that :</p>
+                  <ul>
+                  <li>Agent 1 can access worlds only through reflexive relations. This means, whatever  is the state of the system, agent 1 knows it.</li>
+                  <li>Agent 2 can access all worlds from all other worlds, especially at the start of the game.</li>
+                  </ul>
+      
+      
+                </div>
+            </div>
+
+
+
+            <div class="w3-row">
+                <div style="text-align:center">
+                    <h1 class="w3-xxlarge">Higher Order Knowledge</h1>
+                
+                </div>
+                <div class="w3-xmedium w3-text-black">
+                  <p class=""><p>            <p>Now, when the game proceeds, code-breaker makes guesses and code-maker provides feedback by analysing them with respect to the secret code.</p>
+                  <p>Accounting this in terms of public announcement logic, the feedback is a truthful public announcement. It allows code-breaker to narrow down the possible worlds and make a viable next guess.</p>
+                  <p>For example, given the above code, if player 2 makes the following guess :</p>
+                  <div class="img-wrapper"><img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/guess_1.jpg" width="140" class="img-fluid"></div>
+                  <p>Player 1 provides the following feedback : <code>[0 1 1 -1]</code></p>
+                  <p>This means that:</p>
+                  <ul>
+                  <li>First color blue occus in the secret code, but not at the first position.</li>
+                  <li>Second color yellow is correctly placed as in the secret code. It does not need any change.</li>
+                  <li>Third color red is correctly placed as in the secret code. It does not need any change.</li>
+                  <li>Fourth color pink is incorrect. It does not appear in the secret code, and needs to be replaced.</li>
+                  </ul>
+                  <p>The above announcements are made publicly in the game, and become common knowledge henceforth.</p>
+                  <p>Thus, after these announcements, the Kripke Model gets restricted as follows :</p>
+                  <ul>
+                  <li><p>Second and third colors have to be yellow and red respectively. All the worlds with other possibilities for second and third colors are eliminated. Following worlds would be possible :</p>
+                  <div class="img-wrapper"> <img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/possible_worlds1.jpg" width="275 class="img-fluid"></div>
+                  </li>
+                  <li><p>Blue needs to be somewhere other than the first position. But since second and third position are already occupied, blue can only occur at fourth position. This eliminates all the worlds with any other color on fourth position, or blue color in any other position. Following worlds would be possible :</p>
+                  <div class="img-wrapper">  <img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/possible_worlds2.jpg" width="400" class="img-fluid"></div>
+                  </li>
+                  <li><p>Only place left vacant is the first one. This position is occupied by any color other than pink. Thus, all the worlds with pink in any place on the code are eliminated. Following worlds would be possible :</p>
+                  <div class="img-wrapper">  <img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/possible_worlds3.jpg" width="250" class="img-fluid"></div>
+                  </li>
+                  </ul>
+                  <p>Both the agents are aware of this elimination process, and it becomes common knowledge in the system. Based on the derived system, Player 2 can now make a second guess. Player 1 would again analyse it and provide feedback. Similar procedure would be followed and the game continues.</p>
+                  <p>Using this logic, a game of Mastermind becomes a series of restrictions on the Kripke model until Player 2 has access to only one world and thereby knows the secret code. However, this restriction process is lmiited to only 3 moves. If Player 2 still is unable to make the correct guess, Player 1 wins.</p>
+      
+                </div>
+            </div>
+            
+            <div class="w3-row">
+                <div style="text-align:center">
+                    <h1 class="w3-xxlarge">Agent Knowledge</h1>
+
+               
+                </div>
+                <div class="w3-xmedium w3-text-black">
+                  <p class=""><p>            
+                    <p>We monitor the common knowledge, and individual knowledge accummulated by both the agents throughout the game.</p>
+                    <ul>
+                    <li>A knowledge proposition known with surety is expressed as <code>&lt;position&gt;:&lt;color&gt;</code>.</li>
+                    <li>A negation known with surety is expressed as <code>~(&lt;position&gt;:&lt;color&gt;)</code>.</li>
+                    <li>An unsure knowledge proposition which may or may not hold is expressed as <code>*(&lt;position&gt;:&lt;color&gt;)</code>.</li>
+                    </ul>
+                    <p>Common Knowledge is collectively available to both agents, however <code>agent1</code> knowledge and <code>agent2</code> knowledge is only available to the respective agents indivdually. We have <code>agent1</code> as the code-maker, and <code>agent2</code> as the code-breaker.</p>
+                    <p><code>Agent1</code> individual knowledge is only updated once, when he generates the code. For example, if the following code is generated :</p>
+                    <div class="img-wrapper"> <img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/code.jpg" width="140" class="img-fluid"></div>
+                    <p><code>agent1</code> knowledge is updated accordingly. He knows for the sure the correct position of all the colors in the code, thus he adds a knowledge proposition for each of them to his individual knowledge base.</p>
+                    <ul>
+                    <li><code>Green</code> at position 1 : <code>1:green</code></li>
+                    <li><code>Yellow</code> at postion 2 : <code>2:yellow</code></li>
+                    <li><code>Red</code> at position 3 : <code>3:red</code></li>
+                    <li><code>Blue</code> at position 4 : <code>4:blue</code></li>
+                    </ul>
+                    <p>However, the common knowledge ant <code>agent2</code> knowledge are updated with every move and feedback generated therein. For example, suppose we get the feedback <code>[0 1 1 -1]</code> for the following move :</p>
+                    <div class="img-wrapper"> <img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/guess_1.jpg" width="140" class="img-fluid"></div>
+                    <p>Since the feedback is a public announcement in the game, we get the following agent knowledge propositions :</p>
+                    <ul>
+                    <li>For first color <code>blue</code> with feedback <code>0</code> :<ul>
+                    <li>Common Knowledge : <code>Blue</code> is not present at position 1, i.e., <code>~(1:blue)</code>.</li>
+                    <li>Agent 2 Knowledge : It can deduce that <code>blue</code> is either at position 2 or 3 or 4, i.e., <code>*(2:blue)</code>, <code>*(3:blue)</code> and <code>*(4:blue)</code>.</li>
+                    </ul>
+                    </li>
+                    <li>For second color <code>yellow</code> with feedback <code>1</code>:<ul>
+                    <li>Common Knowledge : <code>Yellow</code> is present at position 2, i.e., <code>(2:yellow)</code>.</li>
+                    <li>Agent 2 Knowledge : Code breaker can deduce that no other color is present at position 2, i.e., <code>~(2:violet)</code>, <code>~(2:red)</code>, <code>~(2:green)</code>, <code>~(2:pink)</code> and <code>~(2:blue)</code>.</li>
+                    </ul>
+                    </li>
+                    <li>For third color <code>red</code> with feedback <code>1</code>:<ul>
+                    <li>Common Knowledge : <code>Red</code> is present at position 3, i.e., <code>(3:red)</code>.</li>
+                    <li>Agent 3 Knowledge : Code breaker can deduce that no other color is present at position 3, i.e., <code>~(3:violet)</code>, <code>~(3:yellow)</code>, <code>~(3:green)</code>, <code>~(3:pink)</code> and <code>~(3:blue)</code>.</li>
+                    </ul>
+                    </li>
+                    <li>For fourth color <code>pink</code> with feedback <code>-1</code>:<ul>
+                    <li>Common Knowledge : <code>Pink</code> is not present at any position i.e., <code>~(1:pink)</code>, <code>~(2:pink)</code>, <code>~(3:pink)</code> and <code>~(4:pink)</code></li>
+                    <li>Agent 2 Knowledege : In addition to common knowledge, agent 2 can deduce that any other color may be present at position 4, i.e., <code>*(4:yellow)</code>, <code>*(4:violet)</code>, <code>*(4:red)</code>, <code>*(4:green)</code> and <code>*(4:blue)</code>.</li>
+                    </ul>
+                    </li>
+                    </ul>
+                    
+                </div>
+            </div>
+
+            
+
+            
+            <div class="w3-row">
+                <div style="text-align:center">
+                    <h1 class="w3-xxlarge">Strategies</h1>
+                </div>
+                <div class="w3-xmedium w3-text-black">
+                  <p class=""><p>            
+                    <p>We have implemented three strategies for the code-breaker here. They are explained below :</p>
+                        <h3 id="1-mathematician-code-breaker">i. Mathematician Code Breaker</h3>
+                        <p>Under this strategy, the code-breaker analyses the feedback on each of his previous moves to generate the next move. However, information learnt from older moves is not maintained. Only the immediately last move is examined with the feedback obtained, and next move is generated.</p>
+                        <p>For example, if the feedback obtained is <code>[0 1 0 -1]</code>,  for the following move :</p>
+                        <div class="img-wrapper"> <img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/guess_2.jpg" width="140" class="img-fluid"></div>
+                        <p>For the next move, code-breaker knows that :</p>
+                        <ul>
+                        <li>Yellow is perfectly correct, and need not be changed.</li>
+                        <li>Blue and green needs to be in a different position. Since both 1st, 3rd and 4th positions are free to be occupied, they can be placed in any of these randomly.</li>
+                        <li>Pink needs to be replaced, and placed in any of the available empty positions. Any other color (red or violet) and its position from the available empty positions will be chosen randomly for the next move.</li>
+                        </ul>
+                        <p>However, since the learnings from older moves are not maintained,</p>
+                        <ul>
+                        <li>Even if blue placed at position 3 is wrong and this was learnt in an older move, still there is a chance for it to be placed at position 3 again in the next move.</li>
+                        <li>It is possible that color violet is randomly chosen to replace pink, even though it was already violet in one of the previous moves, and was replaced by pink in the last move, on receiving a feedback <code>-1</code> then.</li>
+                        </ul>
+                        <p>Thus, this strategy is not entirely efficient.</p>
+                        <h3 id="2-logician-code-breaker">ii. Logician Code Breaker</h3>
+                        <p>Here, code-breaker makes use of the knowledge model maintained in the game to make a decision about the next move. As we see in the <code>Game</code> class, knowledge model is updated after every move.</p>
+                        <p>Every move, along with the feedback generated for it, is analysed, and the Kripke Model is solved for it. The feedback acts as public announement, and thus the worlds which do not satisfy it are eliminated.</p>
+                        <p>For example, if the feedback obtained is <code>[0 1 0 -1]</code>,  for the following move :</p>
+                        <div class="img-wrapper"> <img src="https://raw.githubusercontent.com/tskr1681/Mastermindgame/master/resources/guess_2.jpg" width="140"class="img-fluid"></div>
+                        <p>In the available Kripke model :</p>
+                        <ul>
+                        <li>Worlds where second color is not yellow will be eliminated.</li>
+                        <li>Worlds where first color is blue, or third color is green will be eliminated.</li>
+                        <li>Worlds where pink is present in any of the positions will be eliminated.</li>
+                        </ul>
+                        <p>Such an elimination is carried out after every move. Thus the number of worlds in the model reduce after every move. In this strategy, for the next move, code-breaker randomly chooses a world from the worlds available after the analysis of the previous move.</p>
+                        <p>Thus, this strategy is the most efficient one, because information is never lost here. Learnings made in every move are carried over, and every decision is made based on the all the previous learnings in the game.</p>
+                        <h3 id="3-random-code-breaker">iii. Random Code Breaker</h3>
+                        <p>Here, no instance of available knowledge, be it feedback from the code-maker, or the knowledge model maintained in the game is used to make a decision about the next move.</p>
+                        <p>Every move is generated randomly, and is independent of the previous moves, or the current states of the game.</p>
+                        <p>This is the least efficient strategy, and rarely does the code-breaker win a game with this strategy.</p>
+
+                    
+                </div>
+            </div>
+
+
+
+            <div class="w3-row">
+                <div style="text-align:center">
+                    <h1 class="w3-xxlarge">Simulations</h1>
+                </div>
+                <div class="w3-xmedium w3-text-black">
+                  <p class=""><p>            
+                    <p>We run 20 game simulations.</p>
+                    <p>For every game, a new code is generated, and a new knowledge model is created. A code-breaker for each of the above stated three strategies is given a chance to play the game, and the winner is recorded.</p>
+                    <p>The score about the number of games won by each of the 3 code-breaker strategies are recorded in the table below.</p>
+                 <style type="text/css" >
+.tg  {border-collapse:collapse;border-color:#93a1a1;border-spacing:0;}
+.tg td{background-color:#fdf6e3;border-color:#93a1a1;border-style:solid;border-width:1px;color:#002b36;
+  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:7px 6px;word-break:normal;}
+.tg th{background-color:#657b83;border-color:#93a1a1;border-style:solid;border-width:1px;color:#fdf6e3;
+  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:7px 6px;word-break:normal;}
+.tg .tg-uqu1{background-color:#000000;border-color:#656565;color:#9b9b9b;font-family:"Times New Roman", Times, serif !important;;
+  font-size:15px;font-weight:bold;text-align:left;vertical-align:top}
+.tg .tg-ur56{background-color:#000000;border-color:#656565;color:#9b9b9b;font-family:"Times New Roman", Times, serif !important;;
+  font-size:15px;text-align:left;vertical-align:top}
+.tg .tg-0j94{background-color:#ffffff;border-color:#000000;font-family:"Times New Roman", Times, serif !important;;font-size:15px;
+  text-align:left;vertical-align:top}
+.tg .tg-iks7{background-color:#ffffff;border-color:#000000;text-align:left;vertical-align:top}
+</style>
+<table class="tg" align="center">
+<thead>
+  <tr>
+    <th class="tg-ur56">Simulation</th>
+    <th class="tg-uqu1"><span style="font-weight:normal;font-style:normal;text-decoration:none">Mathematician Code Breaker</span></th>
+    <th class="tg-uqu1"><span style="font-weight:normal;font-style:normal;text-decoration:none">Logician Code Breaker</span></th>
+    <th class="tg-ur56"><span style="font-weight:normal;font-style:normal;text-decoration:none">Random Code Breaker</span></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0j94">1</td>
+    <td class="tg-0j94">9</td>
+    <td class="tg-0j94">20</td>
+    <td class="tg-iks7">0</td>
+  </tr>
+  <tr>
+    <td class="tg-0j94">2</td>
+    <td class="tg-0j94">9</td>
+    <td class="tg-0j94">20</td>
+    <td class="tg-iks7">1</td>
+  </tr>
+  <tr>
+    <td class="tg-0j94">3</td>
+    <td class="tg-0j94">8</td>
+    <td class="tg-0j94">20</td>
+    <td class="tg-iks7">0</td>
+  </tr>
+  <tr>
+    <td class="tg-0j94">4</td>
+    <td class="tg-0j94">12</td>
+    <td class="tg-0j94">20</td>
+    <td class="tg-iks7">0</td>
+  </tr>
+  <tr>
+    <td class="tg-0j94">5</td>
+    <td class="tg-0j94">10</td>
+    <td class="tg-0j94">20</td>
+    <td class="tg-iks7">1</td>
+  </tr>
+</tbody>
+</table>
+                </div>
+            </div>
+
+
+            <div class="w3-row">
+                <div style="text-align:center">
+                    <h1 class="w3-xxlarge">Project Implementation</h1>
+                </div>
+                <div class="w3-xmedium w3-text-black">
+                  <p class=""><p>            
+                    <p>We have implemented the game in python.</p>
+                    <p>We have two classes, one each for code-maker and the code-breaker. Although, code-breaker is available in three variants according to the three strategies decribed above. When a game starts, code-breaker class initialises by randomly generating a code. Code-breaker attempts to guess this code within 3 moves. Code-maker analyses each of these moves and generates a feedback, which is passed onto the code-breaker.</p>
+                    <p>We use a knowledge-manager class to represent the Kripke Model (possible worlds and their relations) according to the current state of the game. There is also an agent-knowledge class which maintains the commong knowledge and individual knowledge propositions for both agents at every state of the game.</p>
+                    <p>The game class takes the responsibility to bring all these features together, and conduct a game. In each move, code-breaker makes a guess, and code-maker provides feedback. The knowledge base in Kripke model and agent knowledge is updated accordingly. We have three strategies in place for code-breaker, however the game by default runs for mathematician code-breaker.</p>
+                    <p>Strategy analyser class provides an interface to run simulation games to compare the three strategies available.</p>
+                    <p>We have written unit tests for most of the logic in the code. These ensure that no unintentional changes can take place in the code. Thus, it is recommended to run the tests everytime before starting off with the project.</p>
+                </div>
+            </div>
+
+
+
+
+
+
+
+        <script>
+            function myFunction() {
+              var x = document.getElementById("myTable");
+              if (x.style.display === "none") {
+                x.style.display = "block";
+              } else {
+                x.style.display = "none";
+              }
+            }
+            function myFunction2() {
+              var x = document.getElementById("log");
+              if (x.style.display === "none") {
+                x.style.display = "block";
+              } else {
+                x.style.display = "none";
+              }
+            }
+            function myFunction3() {
+              var x = document.getElementById("stratTable");
+              if (x.style.display === "none") {
+                x.style.display = "block";
+              } else {
+                x.style.display = "none";
+              }
+            }
+        </script>
+
+    </body>
+</html> 
+
+
